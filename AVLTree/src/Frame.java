@@ -7,8 +7,15 @@ public class Frame extends JFrame {
         Panel panel = new Panel();
         add(panel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //setSize(1600, 900);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int w= screenSize.width;
+        int h= screenSize.height;
+        if (w!=1920||h!=1080){
+            setSize(w, w*9/16-20);
+        }
+        else{
+            setExtendedState(JFrame.MAXIMIZED_BOTH);
+        }
         setVisible(true);
     }
 }
