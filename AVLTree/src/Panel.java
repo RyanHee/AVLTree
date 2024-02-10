@@ -40,39 +40,7 @@ public class Panel extends JPanel implements KeyListener, ActionListener {
         setFocusable(true);
         timer = new Timer(500, this); // Toggle cursor visibility every 500 ms
         timer.start();
-        /*
-        tree.add(10);
-        tree.add(130);
-        tree.add(170);
-        tree.add(-1);
-        tree.add(122);
-        tree.add(-10);
-        tree.add(-20);
-        tree.add(4);
-        tree.add(-15);
-        tree.add(-30);
-        tree.add(2);
-        tree.add(1);
-        tree.add(3);
-        tree.add(-7);
-        tree.add(-9);
-        tree.add(-6);
-        tree.add(6);
-        tree.add(5);
-        tree.add(7);
-        tree.add(100);
-        tree.add(110);
-        tree.add(99);
-        tree.add(128);
-        tree.add(126);
-        tree.add(129);
-        tree.add(160);
-        tree.add(150);
-        tree.add(165);
-        tree.add(180);
-        tree.add(190);
-        tree.add(178);
-        */
+        
     }
 
 
@@ -263,7 +231,14 @@ public class Panel extends JPanel implements KeyListener, ActionListener {
             fontMetrics=g.getFontMetrics();
             int sw=fontMetrics.stringWidth(input);
             int sh=fontMetrics.getAscent();
-            g.fillRect(45*w/ i3+sw,1755*h/ i4, 5, sh*9/10);
+            if (isMaximumSizeSet()){
+                g.fillRect(45*w/ i3+sw,1755*h/ i4, 5, sh*9/10);
+            }
+            else{
+                g.fillRect(45*w/ i3+sw,1748*h/ i4, 5, sh*9/10);
+                //System.out.println(1);
+            }
+
         }
 
         //System.out.println(1800*h/ i4);
