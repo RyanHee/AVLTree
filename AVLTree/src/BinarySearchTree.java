@@ -345,17 +345,9 @@ public class BinarySearchTree{
         if (node==null){
             return lst;
         }
-        if (node.left()!=null){
-            if (node.left().value().equals(s)){
-                lst.add(node);
-                return lst;
-            }
-        }
-        if (node.right()!=null){
-            if (node.right().value().equals(s)){
-                lst.add(node);
-                return lst;
-            }
+        if (node.value().equals(s)){
+            lst.add(node);
+            return lst;
         }
         if (s.compareTo(node.value())<0){
             lst.add(node);
@@ -365,6 +357,10 @@ public class BinarySearchTree{
             lst.add(node);
             return findAllAncestors(node.right(), s, lst);
         }
+    }
+
+    public BinaryNode parent(Comparable s){
+        return parent(root, s);
     }
     private BinaryNode parent(BinaryNode node, Comparable s){
         if (node==null){
