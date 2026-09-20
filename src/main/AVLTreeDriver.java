@@ -1,3 +1,5 @@
+package main;
+
 import javax.swing.SwingUtilities;
 
 /** Launches the interactive AVL tree display. */

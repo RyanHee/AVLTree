@@ -1,3 +1,5 @@
+package tests;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Graphics2D;
@@ -18,12 +20,22 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import main.AVLTree;
+import main.BinaryNode;
+import main.Panel;
+import main.TreeLayout;
 
 /** Run headlessly; optionally supply a PNG path for a rendered preview. */
 public class TestTreeView {
+    private static final class InspectableTree extends AVLTree<Integer> {
+        BinaryNode<Integer> rootNode() {
+            return root();
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         Random random = new Random(87321);
-        AVLTree<Integer> tree = new AVLTree<>();
+        InspectableTree tree = new InspectableTree();
         verify(tree);
         for (int i = 0; i < 800; i++) {
             tree.add(random.nextInt());
@@ -81,8 +93,8 @@ public class TestTreeView {
         System.out.println("Tree layout, controls, zoom/pan, and headless rendering checks passed.");
     }
 
-    private static void verify(AVLTree<Integer> tree) {
-        TreeLayout layout = TreeLayout.create(tree.root());
+    private static void verify(InspectableTree tree) {
+        TreeLayout layout = TreeLayout.create(tree.rootNode());
         require(layout.positions.size() == tree.getNumNodes(), "Missing nodes");
         require(layout.edges.size() == Math.max(0, tree.getNumNodes() - 1), "Incorrect edges");
         Map<Double, List<Double>> levels = new HashMap<>();
@@ -95,7 +107,7 @@ public class TestTreeView {
                 require(xs.get(i) - xs.get(i - 1) >= TreeLayout.GAP - 0.001, "Overlapping nodes");
             }
         }
-        checkParents(tree.root(), layout);
+        checkParents(tree.rootNode(), layout);
     }
 
     private static void checkParents(BinaryNode<Integer> node, TreeLayout layout) {

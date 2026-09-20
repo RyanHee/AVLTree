@@ -1,3 +1,5 @@
+package main;
+
 public class BinaryNode<T extends Comparable<? super T>> {
     private BinaryNode<T> left;
     private BinaryNode<T> right;

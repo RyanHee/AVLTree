@@ -1,3 +1,5 @@
+package main;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -5,18 +7,18 @@ import java.util.List;
 import java.util.Map;
 
 /** Compact subtree layout: parents are centered and same-depth contours cannot overlap. */
-final class TreeLayout {
-    static final double DIAMETER = 96;
-    static final double GAP = 132;
-    static final double LEVEL = 136;
-    final Map<Integer, Point2D.Double> positions = new LinkedHashMap<>();
-    final List<int[]> edges = new ArrayList<>();
-    final Map<Integer, Integer> balances = new LinkedHashMap<>();
+public final class TreeLayout {
+    public static final double DIAMETER = 96;
+    public static final double GAP = 132;
+    public static final double LEVEL = 136;
+    public final Map<Integer, Point2D.Double> positions = new LinkedHashMap<>();
+    public final List<int[]> edges = new ArrayList<>();
+    public final Map<Integer, Integer> balances = new LinkedHashMap<>();
     double minX;
     double maxX;
     double maxY;
 
-    static TreeLayout create(BinaryNode<Integer> root) {
+    public static TreeLayout create(BinaryNode<Integer> root) {
         TreeLayout layout = new TreeLayout();
         Branch branch = build(root);
         if (branch != null) {

@@ -1,3 +1,5 @@
+package main;
+
 /**
  * A binary node with a cached height for AVL balancing.
  * @param <T> the naturally ordered value type

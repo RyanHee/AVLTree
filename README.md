@@ -3,8 +3,11 @@
 A generic Java AVL tree with a Swing visualizer and a standalone binary search
 tree. The BST uses the corrected implementation from the Binary-Search-Tree
 project, including Javadoc, typed list traversals, empty-tree handling, and an
-integer diameter accumulator. Its only structural adaptations are the default
+integer diameter accumulator. Its only structural adaptations are the `main`
 package used here and protected root access for the AVL subclass.
+
+Sources live under `src/main` (package `main`) and `src/tests` (package
+`tests`), mirroring the Binary-Search-Tree project's layout.
 
 ## Tree functionality
 
@@ -54,18 +57,45 @@ System.out.println(tree.inOrder());    // [10, 30]
 
 ## Build and run
 
-Requires JDK 11 or newer, with no external dependencies. Run from the project root:
+Requires JDK 11 or newer. The tree and GUI have no external dependencies; only
+the `TestAVL`/`TestBST` unit tests need JUnit (see [Tests](#tests)). Run from
+the project root:
 
 ```sh
 mkdir -p build
-javac -Xlint:all -Werror -d build src/*.java src/tests/*.java
-java -cp build Main
+javac -Xlint:all -Werror -d build src/main/*.java
+java -cp build main.Main
+```
+
+`Main` is a small console example: it inserts values that trigger rotations,
+prints traversals and stats after each step, removes a value, and looks up a
+few values. Sample output:
+
+```text
+Adding 30, 20, 10 (10 triggers a right rotation):
+Level order: [20, 10, 30]
+Height:      1
+
+Adding 40, 50, 60, 25, 5 (more rotations along the way):
+Level order: [40, 20, 50, 10, 30, 60, 5, 25]
+In order:    [5, 10, 20, 25, 30, 40, 50, 60]
+Nodes:       8
+Leaves:      3
+Height:      3
+
+Removing 20:
+In order:    [5, 10, 25, 30, 40, 50, 60]
+Height:      3
+
+Contains 50? true
+Contains 20? false
+Smallest / largest: 5 / 60
 ```
 
 Launch the Swing display:
 
 ```sh
-java -cp build AVLTreeDriver
+java -cp build main.AVLTreeDriver
 ```
 
 Enter space-separated integers in the input field, then choose **Add**, **Remove**,
@@ -90,14 +120,25 @@ The old `forDraw()` method remains for compatibility but is no longer used by th
 
 ## Tests
 
+`TestAVL` and `TestBST` are JUnit 5 tests, split into named `@Test` methods
+with fixed seeds for reproducibility. They run against the JUnit Platform
+Console Launcher's single standalone jar, so no Maven or Gradle is needed.
+Download it once into an untracked `lib/` folder:
+
 ```sh
-java -cp build TestBST
-java -cp build TestAVL
-java -Djava.awt.headless=true -cp build TestTreeView
+mkdir -p lib
+curl -L -o lib/junit-platform-console-standalone-1.11.3.jar \
+    https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.11.3/junit-platform-console-standalone-1.11.3.jar
 ```
 
-Tests generate random values and print their seeds. Pass a printed seed to
-reproduce a run, for example `java -cp build TestAVL 12345`.
+Then compile and run:
+
+```sh
+mkdir -p build
+javac -Xlint:all -Werror -cp lib/junit-platform-console-standalone-1.11.3.jar -d build src/main/*.java src/tests/*.java
+java -jar lib/junit-platform-console-standalone-1.11.3.jar execute -cp build \
+    --select-class tests.TestAVL --select-class tests.TestBST --details=tree
+```
 
 The BST suite retains the earlier regression coverage and compares 10,000
 randomized operations with `TreeSet`. The AVL suite checks all four insertion
@@ -105,9 +146,27 @@ rotations, repeated root removal, duplicates, null handling, drawing slots,
 10,000 mixed operations, and sorted insertion/deletion. After each mutation it
 verifies ordering, balance at every node, and cached heights independently.
 
+`TestVisualAVLTree` and `TestTreeView` stay as plain, dependency-free
+`main()`-based runners (no JUnit needed for these):
+
+```sh
+java -cp build tests.TestVisualAVLTree
+java -Djava.awt.headless=true -cp build tests.TestTreeView
+```
+
+Both print a random seed; pass a printed seed as an argument to reproduce a run,
+for example `java -cp build tests.TestVisualAVLTree 12345`.
+
+`VisualAVLTree` is a separate AVL implementation used only by the graphics
+explorer; it tracks which node values took part in a rotation so the display
+can animate them (see below). Its suite checks all four rotation shapes and a
+removal-triggered rotation against the exact expected rotated node set, then
+fuzzes 5,000 mixed operations against `TreeSet` while checking AVL invariants,
+matching the coverage style of the AVL suite.
+
 The view tests check non-overlapping layouts, centered parents, all nodes and edges,
 controls, invalid input, zoom/pan events, and headless rendering. To save a preview:
 
 ```sh
-java -Djava.awt.headless=true -cp build TestTreeView /tmp/avl-preview.png
+java -Djava.awt.headless=true -cp build tests.TestTreeView /tmp/avl-preview.png
 ```
